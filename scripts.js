@@ -16,6 +16,8 @@
         //vanasonad failist sayings.js
         this.sayings_list = sayings_list;
 
+        this.new=true;
+
         this.init();
     };
 
@@ -24,14 +26,31 @@
     Sayings.prototype = {
 
         init: function(){
-
+          //alert('ase');
             console.log('Sayings started');
 
             Sayings.instance.writeRandomSaying();
-            window.setInterval(function(){
-                Sayings.instance.writeRandomSaying();
-            }, 5000);
+            //window.setInterval(function(){
+              //  Sayings.instance.writeRandomSaying();
+            //}, 5000);
 
+            window.addEventListener("devicemotion", this.triggerMotion.bind(this));
+
+        },
+        triggerMotion: function(event){
+          //console.log(event);
+          var x_gravity = event.accelerationIncludingGravity.x;
+
+          if(x_gravity > 15 && this.new){
+            this.writeRandomSaying();
+            navigator.vibrate(1000);
+
+            this.new = false;
+
+            window.setTimeout(function(){
+              Sayings.instance.new = true;
+            }, 500);
+          }
         },
         startCacheListeners: function(){
             window.applicationCache.addEventListener('updateready',function(){
